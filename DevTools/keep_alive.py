@@ -7,7 +7,8 @@ app = Flask('')
 #The home page
 @app.route('/')
 def home():
-  return "Hello. I am alive"
+  print(f"SERVER: Server successfully started")
+  return ""
 
 #Running the server
 def run():

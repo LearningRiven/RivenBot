@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.utils import get
 
 #Defaults
-DEFAULT_ROLE="The Lost"
+DEFAULT_ROLES="The Lost"
 
 class User(commands.Cog):
 
@@ -13,17 +13,21 @@ class User(commands.Cog):
   #Events
   @commands.Cog.listener()
   async def on_ready(self):
-    print('Riven Bot Online')
+    print('COG:User Cog Successfully Loaded')
 
-  #Autorole Method
+  #Autorole Method - uses on_member_join in order to give a role to everyone 
   @commands.Cog.listener()
   async def on_member_join(self, member):
-    role = get(member.guild.roles, name=DEFAULT_ROLE)
+    role = get(member.guild.roles, name=DEFAULT_ROLES)
     await member.add_roles(role)
-    print(f"{member} was given {role}")
+    print(f"USER: {member} has joined the server and was given {role}")
 
-  #Commands
-  #@commands.command()
+  #Admin Commands
+  @commands.command()
+  @commands.has_role('The Owner')
+  async def updateAllMemberRoles(self, member):
+    #TODO
+    return
 
 def setup(client):
   client.add_cog(User(client))
