@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 
+#Defaults
 DEFAULT_ROLE="The Lost"
 
 class User(commands.Cog):
@@ -16,6 +17,7 @@ class User(commands.Cog):
   async def on_ready(self):
     print('Riven Bot Online')
 
+  #Autorole Method
   @commands.Cog.listener()
   async def on_member_join(self, member):
     role = get(member.guild.roles, name=DEFAULT_ROLE)
