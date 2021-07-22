@@ -1,43 +1,42 @@
 import os
 import discord
-import requests
-import json
-from keep_alive import keep_alive
+from discord.ext import commands
+from Server.keep_alive import keep_alive
 
+#Global tokens
+BOT_TOKEN=os.environ['BOT_TOKEN']
+BOT_PREFIX="."
+
+#Intent
 intents = discord.Intents.default()
 intents.members = True
 
-client = discord.Client(intents=intents)
+#Create the connection to the discord server
+client = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
 
-def get_quote():
-  response = requests.get("https://zenquotes.io/api/random")
-  json_data = json.loads(response.text)
-  quote = json_data[0]['q'] + " -" + json_data[0]['a']
-  return quote
+#Loads a cog
+@client.command()
+async def load(ctx, extension):
+  client.load_extension(f'Cogs.{extension}')
 
-@client.event
-async def on_ready():
-  print('Logged in as {0.user}'.format(client))
+#Unloads a cog
+@client.command()
+async def unload(ctx, extension):
+  client.unload_extension(f'Cogs.{extension}')
 
-@client.event 
-async def on_member_join(member):
-  role = discord.utils.get(member.guild.roles, name='The Lost')
-  await member.add_roles(role)
+#Reloads a cog - used to not need to restart bot
+@client.command()
+async def reload(ctx, extension):
+  client.unload_extension(f'Cogs.{extension}')
+  client.load_extension(f'Cogs.{extension}')
 
-@client.event 
-async def on_message(message):
-  if message.author == client.user:
-    return
+#loops through the cogs folder pulling all of the python files out
+for filename in os.listdir('./Cogs'):
+  if filename.endswith('.py'):
+    client.load_extension(f'Cogs.{filename[:-3]}')
 
-  if message.content.startswith('$inspire'):
-    await message.channel.send(get_quote())
-
-  if message.content.startswith('$commands'):
-    commands = """
-$commands - get a list of the available commands
-$inspire_me - random inspirational quote
-"""
-    await message.channel.send(commands)
-
+#Make sure the webserver keeps running
 keep_alive()
-client.run(os.environ['BOT_TOKEN'])
+
+#Use the token for the bot to connect the code to discord
+client.run(BOT_TOKEN)
