@@ -7,8 +7,6 @@ DEFAULT_ROLE="The Lost"
 
 class User(commands.Cog):
 
-  DEFAULT_ROLE="The Lost"
-
   def __init__(self, client):
     self.client = client
 
