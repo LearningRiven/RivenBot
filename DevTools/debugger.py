@@ -11,6 +11,7 @@ class Debugger(commands.Cog):
   @commands.Cog.listener()
   async def on_ready(self):
     print('DEVTOOLS: logger Cog Successfully Loaded')
+
     
 def setup(client):
   client.add_cog(Debugger(client))
